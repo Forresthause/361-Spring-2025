@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(pubtheme)
+library(here)
 ```
 
 ## Introduction 
@@ -52,12 +53,13 @@ years = 2008:2020
 d = NULL
 
 for(s in sources){
-  cat(s, '') ## show progress
+  cat(s, '') ## show progress : prints the source
+      
   
   for(year in years){
-    cat(year, '') ## show progress
+    cat(year, '') ## show progress : prints the year
   
-    ## 
+  
     filename = paste0('rawdata/', s, '_', year, '.csv')
     df = read.csv(filename)
     head(df)
@@ -69,14 +71,11 @@ for(s in sources){
     ## GEOID, crop, source, year, and value (indicating km^3 of water)
     
     
-    
-    
-    
     ## end of transforming data ############################
     
     ## 
     d = rbind(d, df)
-  }
+    }
   
   cat('\n') ## start a new line before showing progress for the next source
 }
@@ -101,6 +100,11 @@ Find the mean, the change from 2008 to 2020, and the percent change from 2008 to
 
 ```{r}
 
+dd1 = d %>% group_by(crop,src,year) %>%
+      summarize(value = sum(value))
+
+dd2 = d %>% group_by(crop,src) %>%
+  summarize(value = mean(value))
 ```
 
 ## 3. Convert Table 2 to a visualization
